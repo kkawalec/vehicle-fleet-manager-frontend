@@ -45,7 +45,7 @@ const VehicleForm = ({ isOpen, onClose, onEdit, selectedVehicle }: Props) => {
   const onSubmit = async (data: any) => {
     setIsLoading(true);
     try {
-      const url = `http://localhost:8000/vehicles/${selectedVehicle?.id || ''}`;
+      const url = `https://boiling-eyrie-36583.herokuapp.com/${selectedVehicle?.id || ''}`;
 
       await axios.post(url, data);
       onEdit();
