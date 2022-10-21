@@ -30,6 +30,19 @@ const Dashboard = () => {
     setIsLoading(false);
   };
 
+  const onRemoveVehicle = async (vehicleId: string) => {
+    setIsLoading(true);
+    try {
+      await axios.delete(
+        `https://boiling-eyrie-36583.herokuapp.com/vehicles/${vehicleId}`,
+      );
+      await loadVehicles();
+    } catch (e) {
+      // do nothing
+      // table should displayed "empty" state
+    }
+  };
+
   useEffect(() => {
     loadVehicles();
   }, []);
@@ -68,6 +81,7 @@ const Dashboard = () => {
           vehicleList={vehicleList}
           isLoading={isLoading}
           onEditVehicle={onEditVehicle}
+          onRemoveVehicle={onRemoveVehicle}
         />
       </Wrapper>
 

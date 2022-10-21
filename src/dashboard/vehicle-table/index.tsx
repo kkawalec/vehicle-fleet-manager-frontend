@@ -10,9 +10,15 @@ type Props = {
   vehicleList: VehicleInterface[];
   isLoading: boolean;
   onEditVehicle: (v: VehicleInterface) => void;
+  onRemoveVehicle: (id: string) => void;
 };
 
-const VehicleTable = ({ vehicleList, isLoading, onEditVehicle }: Props) => {
+const VehicleTable = ({
+  vehicleList,
+  isLoading,
+  onEditVehicle,
+  onRemoveVehicle,
+}: Props) => {
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState<VehicleInterface>();
 
@@ -73,7 +79,13 @@ const VehicleTable = ({ vehicleList, isLoading, onEditVehicle }: Props) => {
                   />
                   <Button
                     onClick={() => showMap(vehicle)}
-                    text=" Show on map"
+                    text="Show on map"
+                    bgColor={colors.GREEN}
+                    size="small"
+                  />
+                  <Button
+                    onClick={() => onRemoveVehicle(vehicle.id)}
+                    text="Remove"
                     bgColor={colors.RED}
                     size="small"
                   />
