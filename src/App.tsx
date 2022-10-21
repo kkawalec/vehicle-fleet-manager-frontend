@@ -1,28 +1,29 @@
 import React from 'react';
-import styled from '@emotion/styled'
+import styled from '@emotion/styled';
+
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+
+import Dashboard from './dashboard';
+import NotFoundPage from './not-found';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Dashboard />,
+    errorElement: <NotFoundPage />,
+  },
+]);
 
 const App = () => {
   return (
     <AppContainer>
-      <Button>Hello!</Button>
+      <RouterProvider router={router} />
     </AppContainer>
   );
-}
+};
 
 const AppContainer = styled.div`
   padding: 20px;
 `;
-
-const Button = styled.button`
-  padding: 32px;
-  background-color: hotpink;
-  font-size: 24px;
-  border-radius: 4px;
-  color: black;
-  font-weight: bold;
-  &:hover {
-    color: white;
-  }
-`
 
 export default App;
