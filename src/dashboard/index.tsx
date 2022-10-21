@@ -18,7 +18,9 @@ const Dashboard = () => {
   const loadVehicles = async () => {
     setIsLoading(true);
     try {
-      const res = await axios.get('https://boiling-eyrie-36583.herokuapp.com/vehicles');
+      const res = await axios.get(
+        'https://boiling-eyrie-36583.herokuapp.com/vehicles',
+      );
       setVehicleList((res as any).data);
     } catch (e) {
       // do nothing
