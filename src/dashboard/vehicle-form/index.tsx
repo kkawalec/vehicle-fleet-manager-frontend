@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { useForm } from 'react-hook-form';
 import styled from '@emotion/styled';
 import Button from '../../components/Button';
 import MapInput from './MapInput';
+import axios from 'axios';
+import colors from '../../colors';
+import { CarType } from '../../interfaces/VehicleInterface';
 
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
 Modal.setAppElement('#root');
@@ -17,7 +20,7 @@ const customStyles = {
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
     minWidth: '400px',
-    backgroundColor: '#FAFAFA',
+    backgroundColor: colors.BG_GREY,
     maxHeight: '100%',
     overflow: 'auto',
   },
@@ -26,22 +29,30 @@ const customStyles = {
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  onEdit: () => void;
 };
 
-enum CarType {
-  SUV = 'SUV',
-  Truck = 'Truck',
-  Hybrid = 'Hybrid',
-}
+const VehicleForm = ({ isOpen, onClose, onEdit }: Props) => {
+  const [isLoading, setIsLoading] = useState(false);
 
-const VehicleForm = ({ isOpen, onClose }: Props) => {
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data: any) => console.log(data);
+
+  const onSubmit = async (data: any) => {
+    setIsLoading(true);
+    try {
+      await axios.post('http://localhost:8000/vehicles', data);
+      onEdit();
+      onClose();
+    } catch (e) {
+      console.error(e);
+    }
+    setIsLoading(false);
+  };
 
   const closeModal = () => {
     onClose();
@@ -86,9 +97,14 @@ const VehicleForm = ({ isOpen, onClose }: Props) => {
         <MapInput setValue={setValue} {...register('lastGeolocationPoint')} />
 
         <FormFooter>
-          <Button bgColor="green" type="submit" text="Save" />
           <Button
-            bgColor="grey"
+            bgColor={colors.GREEN}
+            type="submit"
+            text="Save"
+            disabled={isLoading}
+          />
+          <Button
+            bgColor={colors.MID_GREY}
             type="button"
             onClick={closeModal}
             text="Close"
@@ -130,7 +146,7 @@ const Label = styled.label`
 
 const ErrorMessage = styled.span`
   font-size: 12px;
-  color: red;
+  color: ${colors.RED};
 `;
 
 const FormFooter = styled.div`

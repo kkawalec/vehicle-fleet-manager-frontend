@@ -23,7 +23,8 @@ const App = () => {
 };
 
 const AppContainer = styled.div`
-  padding: 20px;
+  padding: 0;
+  margin: 0;
 `;
 
 export default App;

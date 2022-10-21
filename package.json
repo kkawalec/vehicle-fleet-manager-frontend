@@ -7,7 +7,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "format": "prettier --write \"src/**/*.tsx\"",
+    "format": "prettier --write --ext .js,.ts,.jsx,.tsx src",
     "lint": "eslint ."
   },
   "dependencies": {
@@ -22,6 +22,8 @@
     "@types/node": "^16.11.68",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
+    "axios": "^1.1.3",
+    "date-fns": "^2.29.3",
     "fast-equals": "^4.0.3",
     "prettier": "^2.7.1",
     "react": "^18.2.0",

@@ -9,6 +9,7 @@ interface Props extends React.ComponentPropsWithoutRef<'input'> {
   setValue: (name: string, value: any, options?: Object) => void;
 }
 
+// based on https://developers.google.com/maps/documentation/javascript/react-map
 const MapInput = React.forwardRef<HTMLInputElement, Props>(
   ({ name, setValue }: Props, ref) => {
     const [currentPosition, setCurrentPosition] = React.useState<
