@@ -1,51 +1,53 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { useForm } from 'react-hook-form';
 import styled from '@emotion/styled';
 import Button from '../../components/Button';
-import MapInput from './MapInput';
+import MapInput from '../../components/map/MapInput';
 import axios from 'axios';
 import colors from '../../colors';
 import { CarType } from '../../interfaces/VehicleInterface';
+import { customModalStyles } from '../../components/helpers';
+import VehicleInterface from '../../interfaces/VehicleInterface';
+import { format } from 'date-fns';
 
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
 Modal.setAppElement('#root');
-
-const customStyles = {
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-    minWidth: '400px',
-    backgroundColor: colors.BG_GREY,
-    maxHeight: '100%',
-    overflow: 'auto',
-  },
-};
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
   onEdit: () => void;
+  selectedVehicle: VehicleInterface | null;
 };
 
-const VehicleForm = ({ isOpen, onClose, onEdit }: Props) => {
+const VehicleForm = ({ isOpen, onClose, onEdit, selectedVehicle }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [vehicleLocation, setVehicleLocation] = useState(
+    selectedVehicle?.lastGeolocationPoint || null,
+  );
 
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
+    reset,
   } = useForm();
+
+  useEffect(() => {
+    if (selectedVehicle) {
+      reset(selectedVehicle);
+      setVehicleLocation(selectedVehicle?.lastGeolocationPoint);
+    }
+  }, [reset, selectedVehicle]);
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
     try {
-      await axios.post('http://localhost:8000/vehicles', data);
+      const url = `http://localhost:8000/vehicles/${selectedVehicle?.id || ''}`;
+
+      await axios.post(url, data);
       onEdit();
       onClose();
     } catch (e) {
@@ -59,7 +61,11 @@ const VehicleForm = ({ isOpen, onClose, onEdit }: Props) => {
   };
 
   return (
-    <Modal isOpen={isOpen} style={customStyles} contentLabel="Vehicle Form">
+    <Modal
+      isOpen={isOpen}
+      style={customModalStyles}
+      contentLabel="Vehicle Form"
+    >
       <Form onSubmit={handleSubmit(onSubmit)}>
         <InputGroup>
           <Label htmlFor="vehicleName">Vehicle Name</Label>
@@ -94,7 +100,21 @@ const VehicleForm = ({ isOpen, onClose, onEdit }: Props) => {
           />
         </InputGroup>
 
-        <MapInput setValue={setValue} {...register('lastGeolocationPoint')} />
+        <MapInput
+          setValue={setValue}
+          startingLocation={vehicleLocation}
+          {...register('lastGeolocationPoint')}
+        />
+
+        {selectedVehicle && (
+          <InputGroup>
+            <Text>UUID: {selectedVehicle.id}</Text>
+            <Text>
+              Created at:{' '}
+              {format(new Date(selectedVehicle.createdAt), 'd LLL yyyy HH:mm')}
+            </Text>
+          </InputGroup>
+        )}
 
         <FormFooter>
           <Button
@@ -153,6 +173,11 @@ const FormFooter = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+`;
+
+const Text = styled.p`
+  margin: 0;
+  font-size: 12px;
 `;
 
 export default VehicleForm;

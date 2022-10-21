@@ -1,57 +1,6 @@
 import React from 'react';
-import { Wrapper } from '@googlemaps/react-wrapper';
 import { createCustomEqual } from 'fast-equals';
 import { isLatLngLiteral } from '@googlemaps/typescript-guards';
-import styled from '@emotion/styled';
-
-interface Props extends React.ComponentPropsWithoutRef<'input'> {
-  name: string;
-  setValue: (name: string, value: any, options?: Object) => void;
-}
-
-// based on https://developers.google.com/maps/documentation/javascript/react-map
-const MapInput = React.forwardRef<HTMLInputElement, Props>(
-  ({ name, setValue }: Props, ref) => {
-    const [currentPosition, setCurrentPosition] = React.useState<
-      google.maps.LatLng | null | undefined
-    >();
-    const [zoom, setZoom] = React.useState(3); // initial zoom
-    const [center, setCenter] = React.useState<google.maps.LatLngLiteral>({
-      lat: 0,
-      lng: 0,
-    });
-
-    const onClick = (e: google.maps.MapMouseEvent) => {
-      setCurrentPosition(e.latLng);
-      setValue(name, e.latLng?.toJSON());
-    };
-
-    const onIdle = (m: google.maps.Map) => {
-      setZoom(m.getZoom()!);
-      setCenter(m.getCenter()!.toJSON());
-    };
-
-    return (
-      <MapContainer>
-        <input type="hidden" ref={ref} />
-        <Wrapper apiKey={'AIzaSyBDtb8Oni7Fqslb3LfwAc088cB2zsIW-H4'}>
-          <Map
-            center={center}
-            onClick={onClick}
-            onIdle={onIdle}
-            zoom={zoom}
-            style={{ flexGrow: '1', height: '400px', width: '400px' }}
-          >
-            <Marker position={currentPosition} />
-          </Map>
-        </Wrapper>
-        <div>
-          <pre>{JSON.stringify(currentPosition?.toJSON(), null, 2)}</pre>
-        </div>
-      </MapContainer>
-    );
-  },
-);
 
 interface MapProps extends google.maps.MapOptions {
   style: { [key: string]: string };
@@ -60,7 +9,13 @@ interface MapProps extends google.maps.MapOptions {
   children?: React.ReactNode;
 }
 
-const Map = ({ onClick, onIdle, children, style, ...options }: MapProps) => {
+export const Map = ({
+  onClick,
+  onIdle,
+  children,
+  style,
+  ...options
+}: MapProps) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const [map, setMap] = React.useState<google.maps.Map>();
 
@@ -108,7 +63,7 @@ const Map = ({ onClick, onIdle, children, style, ...options }: MapProps) => {
   );
 };
 
-const Marker = (options: google.maps.MarkerOptions) => {
+export const Marker = (options: google.maps.MarkerOptions) => {
   const [marker, setMarker] = React.useState<google.maps.Marker>();
 
   React.useEffect(() => {
@@ -170,12 +125,3 @@ function useDeepCompareEffectForMaps(
     callback,
   ]);
 }
-
-const MapContainer = styled.div`
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  gap: 10px;
-`;
-
-export default MapInput;

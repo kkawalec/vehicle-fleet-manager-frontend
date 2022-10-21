@@ -5,8 +5,8 @@ export enum CarType {
 }
 
 export type GeolocationPoint = {
-  lat: string;
-  lng: string;
+  lat: number;
+  lng: number;
 };
 
 interface Vehicle {
