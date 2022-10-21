@@ -65,10 +65,12 @@ const VehicleTable = ({
                 <Cell>{vehicle.vehicleName}</Cell>
                 <Cell>{vehicle.carType}</Cell>
                 <Cell>
-                  {format(
-                    new Date(vehicle.lastSuccessfulConnection),
-                    'd LLL yyyy HH:mm',
-                  )}
+                  {vehicle.lastSuccessfulConnection
+                    ? format(
+                        new Date(vehicle.lastSuccessfulConnection),
+                        'd LLL yyyy HH:mm',
+                      )
+                    : 'unknown'}
                 </Cell>
                 <ActionsCell>
                   <Button
